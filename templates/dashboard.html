@@ -1,0 +1,128 @@
+{% extends "layout.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4 card-dashboard-titulos">Bienvenido al Dashboard, {{ session.get('user', 'Usuario') }}!</h2>
+
+    {# Contenido específico para ADMINISTRADORES #}
+    {% if session.get('rol') == 'admin' %}
+    <div id="admin-dashboard-section" class="mb-5">
+        <h3 class="mb-4 text-center">Panel de Administración</h3>
+        <div class="row justify-content-center g-4">
+            {# Tarjeta: Crear Curso #}
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm text-center">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <i class="fas fa-plus-circle fa-4x text-primary mb-3"></i>
+                        <h5 class="card-title">Crear Nuevo Curso</h5>
+                        <p class="card-text">Añade nuevos cursos a la plataforma.</p>
+                        <a href="{{ url_for('crear_curso') }}" class="btn btn-primary mt-auto">Ir a Crear Curso</a>
+                    </div>
+                </div>
+            </div>
+            {# Tarjeta: Gestionar Cursos (para editar/eliminar) #}
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm text-center">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <i class="fas fa-edit fa-4x text-success mb-3"></i>
+                        <h5 class="card-title">Gestionar Cursos</h5>
+                        <p class="card-text">Edita o elimina cursos existentes.</p>
+                        <button id="btn-gestionar-cursos" class="btn btn-primary mt-auto">Gestionar Cursos</button>
+                    </div>
+                </div>
+            </div>
+            {# Tarjeta: Gestionar Usuarios #}
+            <div class="col-md-4">
+                <div class="card h-100 shadow-sm text-center">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <i class="fas fa-users-cog fa-4x text-info mb-3"></i>
+                        <h5 class="card-title">Gestionar Usuarios</h5>
+                        <p class="card-text">Administra los roles y cuentas de usuario.</p>
+                        <button id="btn-gestionar-usuarios" class="btn btn-primary mt-auto">Gestionar Usuarios</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Contenedor para la lista de cursos administrables (se llena con JS) #}
+        <div id="gestion-cursos-container" class="mt-5 p-4 bg-light rounded shadow-sm" style="display: none;">
+            <h4 class="mb-4 text-center">Cursos para Administrar</h4>
+            <div id="cursos-admin-list" class="row">
+                {# Los cursos se cargarán aquí #}
+            </div>
+        </div>
+
+        {# Contenedor para la lista de usuarios administrables (se llena con JS) #}
+        <div id="gestion-usuarios-container" class="mt-5 p-4 bg-light rounded shadow-sm" style="display: none;">
+            <h4 class="mb-4 text-center">Usuarios Registrados</h4>
+            <div id="usuarios-admin-list">
+                {# Los usuarios se cargarán aquí #}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    {# Contenido específico para USUARIOS COMUNES #}
+    {% if session.get('rol') == 'user' %}
+    <div id="user-dashboard-section" class="mb-5">
+        <h3 class="mb-4 text-center card-dashboard-titulos">Mi Área Personal</h3>
+        <div class="row justify-content-center g-4">
+            {# Tarjeta: Mis Cursos #}
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm text-center">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <i class="fas fa-book-open fa-4x text-primary mb-3"></i>
+                        <h5 class="card-title">Mis Cursos Adquiridos</h5>
+                        <p class="card-text">Aquí verás los cursos a los que te has inscrito.</p>
+                        <button id="btn-mis-cursos" class="btn btn-primary mt-auto">Ver Mis Cursos</button>
+                    </div>
+                </div>
+            </div>
+            {# Tarjeta: Mi Información Personal #}
+            <div class="col-md-6">
+                <div class="card h-100 shadow-sm text-center">
+                    <div class="card-body d-flex flex-column justify-content-center align-items-center">
+                        <i class="fas fa-user-circle fa-4x text-secondary mb-3"></i>
+                        <h5 class="card-title">Mi Perfil</h5>
+                        <p class="card-text">Consulta y actualiza tu información personal.</p>
+                        <button id="btn-mi-perfil" class="btn btn-primary mt-auto">Ver Mi Perfil</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Contenedor para la lista de mis cursos (se llenará con JS) #}
+        <div id="mis-cursos-container" class="mt-5 p-4 bg-light rounded shadow-sm" style="display: none;">
+            <h4 class="mb-4 text-center">Cursos en los que estoy inscrito</h4>
+            <div id="mis-cursos-list" class="row">
+                <p class="text-center text-muted">Aún no tienes cursos adquiridos. ¡Explora nuestra <a href="{{ url_for('cursos') }}">galería de cursos</a>!</p>
+            </div>
+        </div>
+
+        {# Contenedor para la información personal (se llenará con JS) #}
+        <div id="mi-perfil-container" class="mt-5 p-4 bg-light rounded shadow-sm" style="display: none;">
+            <h4 class="mb-4 text-center">Mi Información Personal</h4>
+            <div id="mi-perfil-data">
+                {# La información del perfil se cargará aquí #}
+                <p><strong>Email:</strong> {{ session.get('user') }}</p>
+                <p><strong>Rol:</strong> {{ session.get('rol') }}</p>
+                <p class="text-muted">Aquí puedes añadir más campos de perfil si los almacenas en la base de datos.</p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+{# Asegúrate de que este script se cargue antes de dashboard.js #}
+<script>
+    window.FIREBASE_ID_TOKEN = "{{ firebase_id_token | default('') }}";
+    window.USER_ROLE = "{{ session.get('rol', 'user') }}"; // Pasa el rol a JS
+    console.log("FIREBASE_ID_TOKEN en dashboard.html:", window.FIREBASE_ID_TOKEN ? "Presente" : "Ausente o vacío");
+    console.log("USER_ROLE en dashboard.html:", window.USER_ROLE);
+</script>
+<script src="{{ url_for('static', filename='js/dashboard.js') }}"></script>
+{% endblock %}

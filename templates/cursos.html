@@ -1,0 +1,39 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<h2 class="my-4 text-center">Cursos disponibles</h2>
+
+<div class="row mb-4">
+    <div class="col-md-6 mb-3 mb-md-0"> <input type="text" id="search-input" class="form-control" placeholder="Buscar cursos por nombre o descripción...">
+    </div>
+    <div class="col-md-3 mb-3 mb-md-0">
+        <div class="dropdown">
+            <button class="btn btn-outline-secondary dropdown-toggle w-100" type="button" id="categoryDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                Todas las Categorías
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="categoryDropdown" id="category-dropdown-menu">
+                </ul>
+        </div>
+    </div>
+    <div class="col-md-3">
+        <button id="clear-filters" class="btn btn-outline-secondary w-100">Limpiar Filtros</button>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row row-cols-1 row-cols-md-3 g-4" id="cursos-container">
+        <div id="loading-message" class="col-12 text-center" style="display: none;">
+            <p>Cargando cursos...</p>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    const FIREBASE_ID_TOKEN = "{{ firebase_id_token }}";
+</script>
+<script src="/static/js/cursos_listado.js"></script>
+{% endblock %}

@@ -1,0 +1,25 @@
+{% extends "layout.html" %}
+
+{% block title %}Detalle del Curso{% endblock %} 
+
+{% block content %}
+
+<h2 class="my-4 text-center">Detalle del Curso</h2>
+
+<div class="container">
+    <div class="row justify-content-center">
+        {# El ID en el div vacío, donde se insertará la card de detalle #}
+        <div class="col-12" id="detalle-curso-container">
+            <p class="text-center">Cargando detalles del curso...</p>
+        </div>
+    </div>
+    <div class="text-center mt-4">
+        <a href="javascript:history.back()" class="btn btn-secondary">Volver a Cursos</a>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_scripts %}
+    <script src="/static/js/cursos_detalle.js"></script>          
+{% endblock %}

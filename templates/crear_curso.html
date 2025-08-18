@@ -1,0 +1,61 @@
+{% extends "layout.html" %}
+
+{% block title %}Crear Nuevo Curso{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Crear Nuevo Curso</h2>
+
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-sm p-4">
+                <form id="form-crear-curso">
+                    <div class="mb-3">
+                        <label for="nombreCurso" class="form-label">Nombre del Curso</label>
+                        <input type="text" class="form-control" id="nombreCurso" name="nombre" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcionCurso" class="form-label">Descripción Corta</label>
+                        <textarea class="form-control" id="descripcionCurso" name="descripcion" rows="3" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="detalleCurso" class="form-label">Detalle Completo</label>
+                        <textarea class="form-control" id="detalleCurso" name="detalle" rows="5"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="duracionCurso" class="form-label">Duración</label>
+                        <input type="text" class="form-control" id="duracionCurso" name="duracion">
+                    </div>
+                    <div class="mb-3">
+                        <label for="precioCurso" class="form-label">Precio</label>
+                        <input type="number" class="form-control" id="precioCurso" name="precio" step="0.01" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagenCurso" class="form-label">URL de la Imagen</label>
+                        <input type="url" class="form-control" id="imagenCurso" name="imagen">
+                    </div>
+                    <div class="mb-3">
+                        <label for="tagsCurso" class="form-label">Etiquetas (separadas por coma)</label>
+                        <input type="text" class="form-control" id="tagsCurso" name="tags">
+                        <small class="form-text text-muted">Ej: Programación, Desarrollo Web, Python</small>
+                    </div>
+
+                    <div id="alert-message" class="alert mt-3" style="display: none;" role="alert"></div>
+
+                    <button type="submit" class="btn btn-primary">Crear Curso</button>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-secondary mt-3">Volver al Dashboard</a>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    // Define la variable global FIREBASE_ID_TOKEN antes de que se cargue crear_curso.js
+    window.FIREBASE_ID_TOKEN = "{{ firebase_id_token | default('') }}";
+    console.log("FIREBASE_ID_TOKEN en crear_curso.html:", window.FIREBASE_ID_TOKEN ? "Presente" : "Ausente o vacío"); // Nuevo log
+</script>
+<script src="{{ url_for('static', filename='js/crear_curso.js') }}"></script>
+{% endblock %}

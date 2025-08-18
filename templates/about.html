@@ -1,0 +1,28 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+<section class="about-section py-5">
+    <div class="container">
+        <h2 class="my-4 text-center">Sobre nosotros</h2>
+        <div class="row align-items-center">
+        <!-- Columna para el texto -->
+        <div class="col-md-6">
+            <p class="about-text">
+            Somos Oeste Cursos, nacimos en el año 2004, brindando cursos de oficios, idiomas y otras herramientas laborales en formato presencial.
+            Con el transcurso del tiempo, el prestigio adquirido por la institución, gracias a la calidad de los y las docentes, de las instalaciones y al compromiso de los alumnos,
+            posibilitó que nuestra casa crezca y se expanda, incorporando en el año 2014 nuestra primera plataforma virtual, para poder llegar de este modo a cualquier lugar del mundo
+            de manera simple y práctica. Nuestro deseo es promover y facilitar herramientas en relación al trabajo.
+            Entendemos al trabajo como ordenador social, núcleo productivo del desarrollo del país y también destacamos su función en relación al lazo social.
+            Desde Oeste Cursos creemos, como Juan Salvo, que nadie se salva solo.
+            </p>
+        </div>
+        <!-- Columna para la imagen -->
+        <div class="col-md-6 text-center">
+            <img src="{{ url_for('static', filename='img/About1.jpg') }}" class="img-fluid rounded shadow" alt="Sobre nosotros">
+        </div>
+        </div>
+    </div>
+</section>
+
+{% endblock %}

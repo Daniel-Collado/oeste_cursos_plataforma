@@ -1,0 +1,59 @@
+{% extends "layout.html" %}
+
+{% block title %}Editar Curso{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <h2 class="text-center mb-4">Editar Curso</h2>
+    <div class="row justify-content-center">
+        <div class="col-lg-8 col-md-10">
+            <div class="card shadow-sm p-4">
+                <div id="alert-message" class="alert" style="display: none;" role="alert"></div>
+                <form id="formulario-editar-curso">
+                    <input type="hidden" id="curso_id" name="curso_id" value="{{ curso_id }}">
+                    <div class="mb-3">
+                        <label for="nombreCursoId" class="form-label">Nombre del Curso</label>
+                        <input type="text" id="nombreCursoId" name="nombre" class="form-control" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descripcionCursoId" class="form-label">Descripción breve</label>
+                        <textarea class="form-control" id="descripcionCursoId" name="descripcion" rows="4" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="detalleCurso" class="form-label">Detalles completos</label>
+                        <textarea class="form-control" id="detalleCursoId" name="detalle" rows="6" required></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label for="precioCursoId" class="form-label">Precio</label>
+                        <input type="number" step="0.01" class="form-control" id="precioCursoId" name="precio" min="0" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="imagenCursoId" class="form-label">URL de la Imagen</label>
+                        <input type="url" class="form-control" id="imagenCursoId" name="imagen">
+                    </div>
+                    <div class="mb-3">
+                        <label for="tagsCursoId" class="form-label">Tags (separados por comas)</label>
+                        <input type="text" class="form-control" id="tagsCursoId" name="tags">
+                        <small class="form-text text-muted">Ejemplo: Programación, Desarrollo Web, Python</small>
+                    </div>
+
+                    <div class="text-center">
+                        <button type="submit" class="btn btn-primary">Guardar cambios</button>
+                        <a href="{{ url_for('dashboard') }}" class="btn btn-secondary">Cancelar</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+    window.CURSO_ID = "{{ curso_id }}";
+    window.FIREBASE_ID_TOKEN = "{{ firebase_id_token }}";
+    console.log('HTML Script Inline: window.CURSO_ID =', window.CURSO_ID);
+    console.log('HTML Script Inline: window.FIREBASE_ID_TOKEN =', window.FIREBASE_ID_TOKEN);
+</script>
+<script src="{{ url_for('static', filename='js/editar_curso.js') }}"></script>
+{% endblock %}
