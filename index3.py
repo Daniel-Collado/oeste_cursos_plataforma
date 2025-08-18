@@ -1,5 +1,6 @@
 import os
 import json # Importamos la librería json para parsear el contenido del archivo de credenciales
+from dotenv import load_dotenv
 import firebase_admin
 from firebase_admin import credentials, auth as admin_auth, db as admin_db
 from flask import Flask, render_template, request, flash, redirect, url_for, session, jsonify, g
@@ -10,6 +11,8 @@ from functools import wraps
 from datetime import datetime
 import validators
 import re
+
+load_dotenv() 
 
 app = Flask(__name__)
 # 1. Leer la clave secreta de una variable de entorno
