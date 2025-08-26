@@ -21,5 +21,8 @@
 {% endblock %}
 
 {% block extra_scripts %}
+    <script>
+        window.FIREBASE_ID_TOKEN = "{{ firebase_id_token | default('') }}";
+    </script>
     <script src="/static/js/cursos_detalle.js"></script>          
 {% endblock %}

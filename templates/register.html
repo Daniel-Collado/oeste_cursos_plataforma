@@ -6,7 +6,7 @@
 
 <div class="row justify-content-center">
     <div class="col-md-8">
-        <form action="{{ url_for('register') }}" method="POST" class="p-4 border rounded bg-light">
+        <form action="{{ url_for('auth.register') }}" method="POST" class="p-4 border rounded bg-light">
             <!-- Campo Nombre -->
             <div class="mb-3">
                 <label for="name" class="form-label">Nombre</label>
@@ -33,7 +33,7 @@
             </div>
             <!-- Enlace al Login -->
             <div class="text-center mt-3">
-                <p>¿Ya tienes una cuenta? <a href="{{ url_for('login') }}">Inicia sesión</a></p>
+                <p>¿Ya tienes una cuenta? <a href="{{ url_for('auth.login') }}">Inicia sesión</a></p>
             </div>
             <!-- Mensaje de retroalimentación -->
             {% if success %}

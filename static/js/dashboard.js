@@ -1,9 +1,10 @@
 // static/js/dashboard.js
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     console.log('dashboard.js cargado.');
 
     // Obtener el rol del usuario de la variable global inyectada por Flask
     const userRole = window.USER_ROLE;
+    
     console.log("Rol del usuario en dashboard.js:", userRole);
 
     // Elementos del dashboard de ADMIN
@@ -377,18 +378,108 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Lógica para cargar Mis Cursos (para USUARIO COMÚN)
     async function cargarMisCursos() {
-        if (userRole !== 'user') return; // Asegurarse de que solo usuarios comunes carguen esto
+        if (userRole !== 'user') return;
         ocultarTodosLosContenedores();
         misCursosContainer.style.display = 'block';
         misCursosList.innerHTML = '<p class="text-center">Cargando tus cursos...</p>';
-        // Aquí iría la lógica para cargar los cursos comprados por el usuario.
-        // Por ahora, es un placeholder. Necesitarías una API en Flask para esto.
-        // Ejemplo: fetch(`/api/my_courses/${firebase.auth().currentUser.uid}`, { headers: { 'Authorization': `Bearer ${await getCurrentFirebaseIdToken()}` } })
-        setTimeout(() => {
-            misCursosList.innerHTML = '<p class="text-center text-muted">Aún no tienes cursos adquiridos. ¡Explora nuestra <a href="/cursos">galería de cursos</a>!</p>';
-        }, 1000); // Simula una carga
+    
+        try {
+            const firebaseIdToken = window.FIREBASE_ID_TOKEN;
+            const userId = window.FIREBASE_AUTH_UID;
+            
+            if (!firebaseIdToken || !userId) {
+                misCursosList.innerHTML = '<p class="text-center text-muted">Debes iniciar sesión para ver tus cursos.</p>';
+                console.warn("Faltan FIREBASE_ID_TOKEN o FIREBASE_AUTH_UID");
+                return;
+            }
+    
+            const userResponse = await fetch(`/api/users/${userId}`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${firebaseIdToken}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+    
+            if (!userResponse.ok) {
+                const errorData = await userResponse.json();
+                throw new Error(errorData.error || `Error ${userResponse.status}`);
+            }
+            const userData = await userResponse.json();
+            const cursosAdquiridosIds = userData.cursos_adquiridos || [];
+    
+            misCursosList.innerHTML = '';
+            if (cursosAdquiridosIds.length === 0) {
+                misCursosList.innerHTML = '<p class="text-center text-muted">Aún no tienes cursos adquiridos. ¡Explora nuestra <a href="/cursos">galería de cursos</a>!</p>';
+                return;
+            }
+    
+            const misCursos = [];
+            for (const cursoId of cursosAdquiridosIds) {
+                const cursoResponse = await fetch(`/api/cursos/${cursoId}`, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${firebaseIdToken}`,
+                        'Content-Type': 'application/json'
+                    }
+                });
+                if (cursoResponse.ok) {
+                    const cursoData = await cursoResponse.json();
+                    misCursos.push({ id: cursoId, ...cursoData });
+                } else {
+                    console.warn(`No se pudo obtener el curso ${cursoId}`);
+                }
+            }
+    
+            const row = document.createElement('div');
+            row.classList.add('row', 'row-cols-1', 'row-cols-md-2', 'row-cols-lg-3', 'g-3');
+            
+            misCursos.forEach(curso => {
+                const colDiv = document.createElement('div');
+                colDiv.classList.add('col');
+                
+                const cardDiv = document.createElement('div');
+                cardDiv.classList.add('card', 'h-100', 'border-0', 'shadow-sm');
+                
+                const imgElement = document.createElement('img');
+                imgElement.classList.add('card-img-top');
+                imgElement.src = curso.imagen || '/static/images/placeholder.jpg';
+                imgElement.alt = `Imagen de ${curso.nombre}`;
+                
+                const cardBodyDiv = document.createElement('div');
+                cardBodyDiv.classList.add('card-body', 'd-flex', 'flex-column');
+                
+                const cardTitle = document.createElement('h5');
+                cardTitle.classList.add('card-title');
+                cardTitle.textContent = curso.nombre;
+                
+                const cardText = document.createElement('p');
+                cardText.classList.add('card-text');
+                cardText.textContent = curso.descripcion;
+                
+                const cardFooter = document.createElement('div');
+                cardFooter.classList.add('card-footer', 'bg-white', 'border-0', 'text-center');
+                
+                const linkVerCurso = document.createElement('a');
+                linkVerCurso.classList.add('btn', 'btn-primary', 'w-100');
+                linkVerCurso.href = `/cursos_detalle/${curso.id}`;
+                linkVerCurso.textContent = 'Ver Curso';
+                
+                cardBodyDiv.appendChild(cardTitle);
+                cardBodyDiv.appendChild(cardText);
+                cardDiv.appendChild(imgElement);
+                cardDiv.appendChild(cardBodyDiv);
+                cardFooter.appendChild(linkVerCurso);
+                cardDiv.appendChild(cardFooter);
+                colDiv.appendChild(cardDiv);
+                row.appendChild(colDiv);
+            });
+            misCursosList.appendChild(row);
+        } catch (error) {
+            console.error("Error al cargar mis cursos:", error);
+            misCursosList.innerHTML = '<p class="text-center text-danger">Error al cargar tus cursos. Por favor, inténtalo de nuevo más tarde.</p>';
+        }
     }
 
     // Lógica para cargar Mi Perfil (para USUARIO COMÚN)

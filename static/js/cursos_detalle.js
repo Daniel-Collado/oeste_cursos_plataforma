@@ -82,12 +82,57 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
             }
 
-            // Crear el botón para adquirir los cursos
-            const botonAdquirir = document.createElement('a');
-            botonAdquirir.classList.add('btn', 'btn-primary', 'mt-auto');
-            botonAdquirir.textContent = 'Adquirir';
-            botonAdquirir.href = '#'; // TODO: Actualizar con la URL de adquisición
-            // Si necesitas manejar el clic de "Adquirir", puedes agregar un event listener aquí
+
+    // Crear el botón para adquirir los cursos
+    const botonAdquirir = document.createElement('button');
+    botonAdquirir.classList.add('btn', 'btn-primary', 'mt-auto');
+    botonAdquirir.textContent = 'Adquirir';
+
+    // Listener para el botón de adquirir
+    botonAdquirir.addEventListener('click', async (e) => {
+        e.preventDefault();
+
+        // Obtenemos el token de la variable global que inyecta Flask
+        const idToken = window.FIREBASE_ID_TOKEN;
+        console.log("Token recibido en el front-end:", idToken);
+        // Si el token no existe, significa que el usuario no está logueado
+        if (!idToken) {
+            alert('Debes iniciar sesión para adquirir un curso.');
+            window.location.href = '/login';
+            return;
+        }
+
+        try {
+            const response = await fetch(`/api/adquirir_curso/${cursoId}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    // Enviamos el token en el header de Authorization
+                    'Authorization': `Bearer ${idToken}`
+                },
+                body: JSON.stringify({}) // Cuerpo de la solicitud, puede estar vacío
+            });
+            
+            const result = await response.json();
+            
+            if (response.ok) {
+                alert(result.message);
+                window.location.href = '/dashboard';
+            } else {
+                // Manejo de errores específicos del servidor
+                if (response.status === 401 || response.status === 403) {
+                    alert('Error de autenticación. Por favor, inicia sesión de nuevo.');
+                    window.location.href = '/login';
+                } else {
+                    alert(`Error: ${result.error}`);
+                }
+            }
+        } catch (error) {
+            console.error('Error al procesar la compra:', error);
+            alert('Hubo un error al procesar la compra. Intenta de nuevo.');
+        }
+    });
+
 
             cardBody.appendChild(titulo);
             cardBody.appendChild(descripcion);
